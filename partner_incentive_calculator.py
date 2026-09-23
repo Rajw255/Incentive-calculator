@@ -23,19 +23,11 @@ REACTIVATION_MULTIPLIER = 1.25
 
 
 def tier_for_total(total: int) -> int:
-    """One shared tier for all 5 slabs, from the total activation count:
-    floor to the nearest completed multiple of 5, capped at 25.
-    e.g. 20 -> 20, 19 -> 15, 25 -> 25, 30 -> 25.
-    """
     floored = (total // 5) * 5
     return min(25, max(5, floored))
 
 
 def reset_values():
-    # Runs as a callback BEFORE the widgets below are re-instantiated on this
-    # rerun, which is required — Streamlit forbids writing to a widget's
-    # session_state key after that widget has already been created in the
-    # same script run.
     st.session_state["total_activation"] = 0
     for slab_id, _ in SLABS:
         st.session_state[f"active_{slab_id}"] = 0
@@ -117,7 +109,7 @@ with col_a:
             st.markdown("<span style='color:#1F5C56;font-size:13px'>Matches ✓</span>", unsafe_allow_html=True)
         else:
             st.markdown(
-                f"<span style='color:#9C4A34;font-size:13px'>Slabs total {slab_sum}</span>",
+                f"<span style='color:#9C4A34;font-size:13px'>Entered slab partner count not matching to total {slab_sum}</span>",
                 unsafe_allow_html=True,
             )
     st.button("Reset", key="reset_btn", on_click=reset_values)
