@@ -2,6 +2,7 @@ import streamlit as st
 
 st.set_page_config(page_title="Partner Activation Incentive", page_icon="🧮", layout="centered")
 
+# Slab table, as supplied: row = SIP amount slab, column = partner-count tier (5/10/15/20/25).
 SLABS = [
     ("S1", "₹25K–50K"),
     ("S2", "₹50K–1L"),
@@ -9,6 +10,8 @@ SLABS = [
     ("S4", "₹2L–5L"),
     ("S5", ">₹5L"),
 ]
+
+TIERS = [5, 10, 15, 20, 25]
 
 RATES = {
     "S1": {5: 100, 10: 110, 15: 120, 20: 130, 25: 150},
@@ -18,27 +21,13 @@ RATES = {
     "S5": {5: 150, 10: 175, 15: 200, 20: 225, 25: 250},
 }
 
-# Backend-only settings — never shown in the UI.
+# Backend-only — never shown in the UI.
 REACTIVATION_MULTIPLIER = 1.25
 
-
-def tier_for_active_count(n: int) -> int:
-    if n <= 5:
-        return 5
-    if n <= 10:
-        return 10
-    if n <= 15:
-        return 15
-    if n <= 20:
-        return 20
-    return 25
-
-
-# Keep everything tight enough to fit one screen, no scrolling.
 st.markdown(
     """
     <style>
-    .block-container { padding-top: 2.2rem; padding-bottom: 1.5rem; max-width: 620px; }
+    .block-container { padding-top: 2.2rem; padding-bottom: 1.5rem; max-width: 660px; }
     div[data-testid="stVerticalBlock"] div[data-testid="stHorizontalBlock"] { margin-bottom: -0.6rem; }
     </style>
     """,
@@ -46,55 +35,60 @@ st.markdown(
 )
 
 st.markdown("### Partner Activation Incentive")
-st.caption("Enter your total partner count, then active and inactive partners per slab.")
+st.caption("Pick each slab's partner-count tier, then split it into active and inactive.")
 
 total_partner_count = st.number_input("Total partner count", min_value=0, step=1, value=0)
 
 st.write("")
-h1, h2, h3, h4 = st.columns([1.4, 1, 1, 1.3])
+h1, h2, h3, h4, h5 = st.columns([1.3, 0.9, 0.9, 0.9, 1.1])
 h1.markdown("**Slab**")
-h2.markdown("**Active**")
-h3.markdown("**Inactive**")
-h4.markdown("**Incentive**")
+h2.markdown("**Tier**")
+h3.markdown("**Active**")
+h4.markdown("**Inactive**")
+h5.markdown("**Incentive**")
 
-slab_sum = 0
+tier_sum = 0
 total_incentive = 0.0
 
 for slab_id, label in SLABS:
-    c1, c2, c3, c4 = st.columns([1.4, 1, 1, 1.3])
+    c1, c2, c3, c4, c5 = st.columns([1.3, 0.9, 0.9, 0.9, 1.1])
     c1.markdown(
         f"**{slab_id}**  \n<span style='color:gray;font-size:12px'>{label}</span>",
         unsafe_allow_html=True,
     )
-    active = c2.number_input(
-        f"Active partners {slab_id}", min_value=0, step=1, value=0,
+    tier = c2.selectbox(
+        f"Tier {slab_id}", TIERS, index=0,
+        key=f"tier_{slab_id}", label_visibility="collapsed",
+    )
+    active = c3.number_input(
+        f"Active {slab_id}", min_value=0, step=1, value=0,
         key=f"active_{slab_id}", label_visibility="collapsed",
     )
-    inactive = c3.number_input(
-        f"Inactive partners {slab_id}", min_value=0, step=1, value=0,
+    inactive = c4.number_input(
+        f"Inactive {slab_id}", min_value=0, step=1, value=0,
         key=f"inactive_{slab_id}", label_visibility="collapsed",
     )
 
-    rate = RATES[slab_id][tier_for_active_count(active)]
+    rate = RATES[slab_id][tier]
     incentive = rate * (active + REACTIVATION_MULTIPLIER * inactive)
-    c4.markdown(
+    c5.markdown(
         f"<div style='text-align:right; padding-top:8px'>{incentive:,.0f}</div>",
         unsafe_allow_html=True,
     )
 
-    slab_sum += active + inactive
+    tier_sum += tier
     total_incentive += incentive
 
 st.write("---")
 
 col_a, col_b = st.columns([1, 1])
 with col_a:
-    if total_partner_count == 0 and slab_sum == 0:
+    if total_partner_count == 0:
         pass
-    elif total_partner_count == slab_sum:
-        st.success("Matches slab-wise entries", icon="✅")
+    elif total_partner_count == tier_sum:
+        st.success("Matches tiers", icon="✅")
     else:
-        st.error(f"Slab-wise entries add up to {slab_sum}, not {total_partner_count}")
+        st.error(f"Tiers add up to {tier_sum}, not {total_partner_count}")
 
 with col_b:
     st.markdown(
