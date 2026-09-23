@@ -65,7 +65,7 @@ total_activation = st.number_input(
 )
 tier = tier_for_total(int(total_activation))  # not shown anywhere in the UI
 
-h1, h2, h3, h4 = st.columns([1.1, 0.9, 0.7, 0.4])
+h1, h2, h3, h4 = st.columns([1.1, 0.7, 0.9, 0.4])
 h1.markdown("<span style='font-size:12px;color:gray'>Slab</span>", unsafe_allow_html=True)
 h2.markdown("<span style='font-size:12px;color:gray'>Active</span>", unsafe_allow_html=True)
 h3.markdown("<span style='font-size:12px;color:gray'>Inactive</span>", unsafe_allow_html=True)
