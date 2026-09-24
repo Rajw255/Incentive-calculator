@@ -57,7 +57,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.markdown("### SIP Activation Incentive")
+st.markdown("### SIP Activation Incentive Calculator")
 st.caption("Enter total activation count, then active and inactive partners per slab (SIP amount).")
 
 total_activation = st.number_input(
