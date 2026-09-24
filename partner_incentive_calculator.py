@@ -109,7 +109,7 @@ with col_a:
             st.markdown("<span style='color:#1F5C56;font-size:13px'>Matches ✓</span>", unsafe_allow_html=True)
         else:
             st.markdown(
-                f"<span style='color:#9C4A34;font-size:13px'>Slab partner count not matching to total {slab_sum}</span>",
+                f"<span style='color:#9C4A34;font-size:13px'>Slab wise partner sum is not matching to total {total_activation}</span>",
                 unsafe_allow_html=True,
             )
     st.button("Reset", key="reset_btn", on_click=reset_values)
