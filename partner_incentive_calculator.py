@@ -58,7 +58,7 @@ st.markdown(
 )
 
 st.markdown("### SIP Activation Incentive")
-st.caption("Enter your total activation count, then active and inactive partners per slab.")
+st.caption("Enter your total activation count, then active and inactive partners per slab(SIP amount).")
 
 total_activation = st.number_input(
     "Total count of activation", min_value=0, step=1, value=0, key="total_activation"
