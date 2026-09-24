@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.set_page_config(page_title="SIP Activation Incentive", page_icon="🧮", layout="centered")
+st.set_page_config(page_title="SIP Activation Incentive", page_icon="🧮", layout="wide")
 
 SLABS = [
     ("S1", "25K–50K"),
